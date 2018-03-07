@@ -1,4 +1,8 @@
+#!/usr/bin/env python
+
 # Import standard python libraries
+import rospy
+from nav_msgs.srv import GetMap
 import networkx as nx
 import math
 import numpy
@@ -104,18 +108,26 @@ def insert_vertices(G, configs, radius):
 
 # Main Function
 if __name__ == "__main__":
-
+    rospy.init_node("generate_graph")
+    map_service_name = rospy.get_param("~static_map", "static_map")
+    print("Getting map from service: ", map_service_name)
+    rospy.wait_for_service(map_service_name)
+    
+    graph_file = rospy.get_param("~graph_file", None)
+    map_msg = rospy.ServiceProxy(map_service_name, GetMap)().map
+    map_info = map_msg.info
+    
     spaceDimension = 3
 
     if spaceDimension == 3:
         bases = [2,3,5]
 
-    lower = numpy.append(numpy.zeros(spaceDimension-1), 0.0)
-    upper = numpy.append(numpy.ones(spaceDimension-1), 2*numpy.pi)
+    lower = numpy.array([map_info.origin.position.x, map_info.origin.position.y,0.0])
+    upper = numpy.array([map_info.origin.position.x+map_info.resolution*map_info.width, map_info.origin.position.y+map_info.resolution*map_info.height, 2*numpy.pi])
 
     # Settings
-    halton_points = 2
-    disc_radius = 50#2*halton_points**(-0.5)
+    halton_points = 500
+    disc_radius = 100#2*halton_points**(-0.5)
     print(disc_radius)
 
     for i in range(1):
@@ -125,5 +137,6 @@ if __name__ == "__main__":
         riskmapFile = 'haltonGraph.graphml'
 
         # Generate the graph
-        G = euclidean_halton_graph(halton_points, disc_radius, bases, lower, upper, offset, spaceDimension)
+        print 'Generating the graph'
+        G = euclidean_halton_graph(halton_points, disc_radius, bases, lower, upper, None, None, map_msg)
         nx.write_graphml(G, riskmapFile)

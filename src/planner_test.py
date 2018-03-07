@@ -5,10 +5,14 @@ import numpy as np
 from ta_lab4.srv import *
 
 PLANNER_SERVICE_TOPIC = '/planner_node/get_plan'
-SOURCE = [13.76, 44.88, 0]
-TARGET = [64,    11,    0]
-#SOURCE = [62.72,  53.6, 0.0]
-#TARGET = [17.52,  26.48,0.0]
+SOURCE = [-48.68, -0.28, 0]   # Where the plan should start
+TARGET = [1.56,    -34.16,    0] # Where the plan should finish
+
+#SOURCE = [0.28,  8.44, 0.0]
+#TARGET = [-44.92,  -18.68,1.57]
+
+#SOURCE = [-8.76,  -2.04, 0.0]
+#TARGET = [-10.68,  -24.28, 0.0]
 
 if __name__ == '__main__':
 
