@@ -112,5 +112,5 @@ class HaltonPlanner(object):
     cv2.imshow('Simulation', envMap)
 
     # Terminate and exit elegantly
-    cv2.waitKey(20000)
+    cv2.waitKey(0)
     cv2.destroyAllWindows()
